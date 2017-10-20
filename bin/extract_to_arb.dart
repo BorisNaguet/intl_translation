@@ -69,7 +69,7 @@ main(List<String> args) {
   }
   var allMessages = {};
   if(locale != null) {
-    allMessages["_locale"] = locale;
+    allMessages["@@locale"] = locale;
   }
   allMessages["@@last_modified"] = new DateTime.now().toIso8601String();
   for (var arg in args.where((x) => x.contains(".dart"))) {
