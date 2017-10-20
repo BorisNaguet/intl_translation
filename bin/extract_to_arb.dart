@@ -21,7 +21,7 @@ main(List<String> args) {
   var targetDir;
   var outputFilename;
   bool transformer;
-  bool indent = false;
+  bool indent = true;
   var parser = new ArgParser();
   var extraction = new MessageExtraction();
   String locale;
@@ -43,10 +43,10 @@ main(List<String> args) {
       callback: (x) => transformer = x,
       help: "Assume that the transformer is in use, so name and args "
           "don't need to be specified for messages.");
-  parser.addFlag("indent",
+  parser.addFlag("no-indent",
 	  defaultsTo: false,
-	  callback: (x) => indent = x,
-	  help: "Generates arb file with indented json.");
+	  callback: (x) => indent = ! x,
+	  help: "Generates one line arb file json.");
 
   parser.addOption("locale",
       defaultsTo: null,
@@ -76,13 +76,7 @@ main(List<String> args) {
     messages.forEach((k, v) => allMessages.addAll(toARB(v)));
   }
   var file = new File(path.join(targetDir, outputFilename));
-  JsonEncoder encoder;
-  if(indent) {
-  	encoder = new JsonEncoder.withIndent("  ");
-  }
-  else {
-  	encoder = const JsonEncoder();
-  }
+  JsonEncoder encoder = indent ? new JsonEncoder.withIndent("  ") : const JsonEncoder();
   file.writeAsStringSync(encoder.convert(allMessages));
   if (extraction.hasWarnings && extraction.warningsAreErrors) {
     exit(1);
